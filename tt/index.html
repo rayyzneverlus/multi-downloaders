@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TikTok Downloader</title>
   <style>
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#25F4EE,#FE2C55);color:#111}
-    .wrap{max-width:860px;margin:40px auto;padding:28px;background:rgba(255,255,255,0.08);border-radius:12px}
-    h1{margin:0 0 8px}
-    input,button{width:100%;padding:12px;border-radius:8px;border:0;margin-top:10px;font-size:15px}
-    .result{margin-top:16px;padding:12px;background:rgba(0,0,0,0.04);border-radius:8px}
-    a.download-link{display:inline-block;margin-top:8px;padding:10px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none}
-    .back{display:inline-block;margin-top:14px;color:rgba(0,0,0,0.7);text-decoration:underline}
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff5f7;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: #ff0050; }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 15px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 20px;
+      background: #ff0050;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🎵 TikTok Downloader</h1>
-    <p>Masukkan link TikTok lalu tekan <strong>Get</strong>.</p>
-
-    <input id="url" placeholder="https://www.tiktok.com/@user/video/..." />
-    <button id="btn">Get</button>
-
-    <div id="result" class="result">Hasil akan muncul di sini.</div>
-    <a class="back" href="/">⬅ Kembali</a>
-  </div>
+  <h1>TikTok Downloader</h1>
+  <input id="tturl" type="text" placeholder="Tempel link TikTok di sini">
+  <br>
+  <button onclick="download()">Download Video</button>
 
   <script>
-    document.getElementById('btn').addEventListener('click', async () => {
-      const url = document.getElementById('url').value.trim()
-      if (!url) return alert('Masukkan URL TikTok!')
-      const result = document.getElementById('result')
-      result.innerHTML = '⏳ Menghubungi server...'
-      try {
-        const r = await fetch(`/api/tt?url=${encodeURIComponent(url)}`)
-        const data = await r.json()
-        if (data.error) throw new Error(data.error)
-
-        // Try common fields
-        let html = ''
-        if (data.noWatermark) html += `<a class="download-link" href="${data.noWatermark}" target="_blank">⬇️ Download (no watermark)</a><br>`
-        if (data.watermark) html += `<a class="download-link" href="${data.watermark}" target="_blank">⬇️ Download (with watermark)</a><br>`
-        if (data.play) html += `<a class="download-link" href="${data.play}" target="_blank">⬇️ Download (play)</a><br>`
-        if (!html) html = '<pre>' + JSON.stringify(data,null,2) + '</pre>'
-        result.innerHTML = html
-      } catch (e) {
-        result.innerHTML = '❌ Error: ' + e.message
+    function download() {
+      const url = document.getElementById("tturl").value.trim();
+      if (!url) {
+        alert("Masukkan URL TikTok terlebih dahulu!");
+        return;
       }
-    })
+      const api = `https://hookrest.my.id/download/tiktok?url=${encodeURIComponent(url)}`;
+      window.location.href = api;
+    }
   </script>
 </body>
 </html>
