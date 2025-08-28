@@ -1,75 +1,72 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>YouTube Downloader</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #FF0000, #FF4D4D);
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 1rem;
-    }
-    button {
-      padding: 12px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #444;
-    }
-    a {
-      margin-top: 20px;
-      display: inline-block;
-      color: white;
-      text-decoration: underline;
-    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#ff416c,#ff4b2b);color:#fff}
+    .wrap{max-width:860px;margin:40px auto;padding:28px;background:rgba(0,0,0,0.12);border-radius:12px}
+    h1{margin:0 0 8px}
+    input,select,button{width:100%;padding:12px;border-radius:8px;border:0;margin-top:10px;font-size:15px}
+    .row{display:flex;gap:10px}
+    .row > *{flex:1}
+    .result{margin-top:16px;padding:12px;background:rgba(255,255,255,0.06);border-radius:8px}
+    a.download-link{display:inline-block;margin-top:8px;padding:10px 14px;border-radius:8px;background:#10b981;color:#fff;text-decoration:none}
+    .back{display:inline-block;margin-top:14px;color:rgba(255,255,255,0.9);text-decoration:underline}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>YouTube Downloader</h1>
-    <input type="text" id="url" placeholder="Masukkan URL YouTube">
-    <button onclick="download()">Download</button>
-    <a href="/">⬅ Kembali</a>
-    <div id="result"></div>
+  <div class="wrap">
+    <h1>🎥 YouTube Downloader</h1>
+    <p>Masukkan link YouTube, pilih format lalu tekan <strong>Get</strong>.</p>
+
+    <input id="url" placeholder="https://www.youtube.com/watch?v=..." />
+
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <select id="format" style="flex:1">
+        <option value="mp3">MP3 (audio)</option>
+        <option value="360p">MP4 360p</option>
+        <option value="720p">MP4 720p</option>
+        <option value="1080p">MP4 1080p</option>
+      </select>
+      <button id="btn" style="width:160px">Get</button>
+    </div>
+
+    <div id="result" class="result">Hasil akan muncul di sini.</div>
+
+    <a class="back" href="/">⬅ Kembali</a>
   </div>
 
   <script>
-    async function download() {
-      const url = document.getElementById("url").value;
-      if(!url) return alert("Masukkan URL YouTube dulu!");
-      const res = await fetch(`https://zenzapis.xyz/api/downloader/ytmp4?url=${encodeURIComponent(url)}&apikey=YOURKEY`);
-      const data = await res.json();
-      if(data?.result?.url) {
-        document.getElementById("result").innerHTML = `<a href="${data.result.url}" target="_blank">📥 Download Video</a>`;
-      } else {
-        document.getElementById("result").innerHTML = "❌ Gagal mengambil link.";
+    const btn = document.getElementById('btn')
+    const result = document.getElementById('result')
+
+    btn.addEventListener('click', async () => {
+      const url = document.getElementById('url').value.trim()
+      const format = document.getElementById('format').value
+      if (!url) return alert('Masukkan link YouTube!')
+
+      result.innerHTML = '⏳ Menghubungi server...'
+      try {
+        const r = await fetch(`/api/yt?url=${encodeURIComponent(url)}&format=${encodeURIComponent(format)}`)
+        const data = await r.json()
+        if (data.error) throw new Error(data.error)
+
+        // show result
+        result.innerHTML = `✅ <strong>${escapeHtml(data.title || 'Unknown title')}</strong><br>Format: <code>${data.format}</code>`
+        if (data.dlink) {
+          result.innerHTML += `<br><a class="download-link" href="${data.dlink}" target="_blank" rel="noopener">⬇️ Download</a>`
+        } else if (data.download) {
+          result.innerHTML += `<br><a class="download-link" href="${data.download}" target="_blank" rel="noopener">⬇️ Download</a>`
+        }
+
+      } catch (e) {
+        result.innerHTML = '❌ Error: ' + e.message
       }
-    }
+    })
+
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]) }
   </script>
 </body>
-                       </html>
+  </html>
