@@ -1,50 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pilih Downloader</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Downloader Center</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #007BFF, #00C6FF);
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-    }
-    a {
-      display: inline-block;
-      margin: 10px;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      text-decoration: none;
-      color: white;
-      background: rgba(0,0,0,0.3);
-      transition: 0.3s;
-    }
-    a:hover {
-      background: rgba(0,0,0,0.6);
-    }
+    :root{--bg1:#0f172a;--card:rgba(255,255,255,0.05)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a,#0b3a55);font-family:Inter,system-ui,Arial;color:#fff}
+    .wrap{width:980px;max-width:96%;padding:40px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);box-shadow:0 6px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 10px;font-size:28px}
+    p.lead{margin:0 0 26px;color:rgba(255,255,255,0.85)}
+    .grid{display:flex;gap:18px;flex-wrap:wrap}
+    .card{flex:1;min-width:220px;padding:22px;border-radius:10px;background:var(--card);text-align:left;cursor:pointer;transition:all .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .card h2{margin:0 0 8px}
+    .card p{margin:0;color:rgba(255,255,255,0.8)}
+    .meta{margin-top:12px;font-size:13px;color:rgba(255,255,255,0.6)}
+    .foot{margin-top:20px;text-align:right}
+    a.btn{display:inline-block;padding:8px 12px;border-radius:8px;background:#10b981;color:#fff;text-decoration:none}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Downloader Tools</h1>
-    <a href="/yt">🎥 YouTube Downloader</a>
-    <a href="/tt">🎵 TikTok Downloader</a>
+  <div class="wrap">
+    <h1>Downloader Center</h1>
+    <p class="lead">Pilih salah satu downloader. Semua route menggunakan <code>/yt</code> dan <code>/tt</code> — setiap folder berisi <code>index.html</code> sehingga URL tetap bersih.</p>
+
+    <div class="grid">
+      <a class="card" href="/yt">
+        <h2>🎥 YouTube Downloader</h2>
+        <p>Download MP3 / MP4 dari YouTube (backend: ssvid.net proxy).</p>
+        <div class="meta">URL: <code>/yt</code></div>
+      </a>
+
+      <a class="card" href="/tt">
+        <h2>🎵 TikTok Downloader</h2>
+        <p>Download video TikTok (proxy ke service TikTok yang kamu punya).</p>
+        <div class="meta">URL: <code>/tt</code></div>
+      </a>
+    </div>
+
+    <div class="foot">
+      <a class="btn" href="#">Programmer Farel</a>
+    </div>
   </div>
 </body>
-</html>
+  </html>
