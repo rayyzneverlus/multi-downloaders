@@ -1,72 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTube Downloader</title>
   <style>
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#ff416c,#ff4b2b);color:#fff}
-    .wrap{max-width:860px;margin:40px auto;padding:28px;background:rgba(0,0,0,0.12);border-radius:12px}
-    h1{margin:0 0 8px}
-    input,select,button{width:100%;padding:12px;border-radius:8px;border:0;margin-top:10px;font-size:15px}
-    .row{display:flex;gap:10px}
-    .row > *{flex:1}
-    .result{margin-top:16px;padding:12px;background:rgba(255,255,255,0.06);border-radius:8px}
-    a.download-link{display:inline-block;margin-top:8px;padding:10px 14px;border-radius:8px;background:#10b981;color:#fff;text-decoration:none}
-    .back{display:inline-block;margin-top:14px;color:rgba(255,255,255,0.9);text-decoration:underline}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: #e62117; }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 15px 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .mp4 { background: #28a745; color: white; }
+    .mp3 { background: #007bff; color: white; }
+    button:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🎥 YouTube Downloader</h1>
-    <p>Masukkan link YouTube, pilih format lalu tekan <strong>Get</strong>.</p>
-
-    <input id="url" placeholder="https://www.youtube.com/watch?v=..." />
-
-    <div style="margin-top:8px;display:flex;gap:8px">
-      <select id="format" style="flex:1">
-        <option value="mp3">MP3 (audio)</option>
-        <option value="360p">MP4 360p</option>
-        <option value="720p">MP4 720p</option>
-        <option value="1080p">MP4 1080p</option>
-      </select>
-      <button id="btn" style="width:160px">Get</button>
-    </div>
-
-    <div id="result" class="result">Hasil akan muncul di sini.</div>
-
-    <a class="back" href="/">⬅ Kembali</a>
-  </div>
+  <h1>YouTube Downloader</h1>
+  <input id="yturl" type="text" placeholder="Tempel link YouTube di sini">
+  <br>
+  <button class="mp4" onclick="download('ytmp4')">Download MP4</button>
+  <button class="mp3" onclick="download('ytmp3')">Download MP3</button>
 
   <script>
-    const btn = document.getElementById('btn')
-    const result = document.getElementById('result')
-
-    btn.addEventListener('click', async () => {
-      const url = document.getElementById('url').value.trim()
-      const format = document.getElementById('format').value
-      if (!url) return alert('Masukkan link YouTube!')
-
-      result.innerHTML = '⏳ Menghubungi server...'
-      try {
-        const r = await fetch(`/api/yt?url=${encodeURIComponent(url)}&format=${encodeURIComponent(format)}`)
-        const data = await r.json()
-        if (data.error) throw new Error(data.error)
-
-        // show result
-        result.innerHTML = `✅ <strong>${escapeHtml(data.title || 'Unknown title')}</strong><br>Format: <code>${data.format}</code>`
-        if (data.dlink) {
-          result.innerHTML += `<br><a class="download-link" href="${data.dlink}" target="_blank" rel="noopener">⬇️ Download</a>`
-        } else if (data.download) {
-          result.innerHTML += `<br><a class="download-link" href="${data.download}" target="_blank" rel="noopener">⬇️ Download</a>`
-        }
-
-      } catch (e) {
-        result.innerHTML = '❌ Error: ' + e.message
+    function download(type) {
+      const url = document.getElementById("yturl").value.trim();
+      if (!url) {
+        alert("Masukkan URL YouTube terlebih dahulu!");
+        return;
       }
-    })
-
-    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]) }
+      const api = `https://hookrest.my.id/download/${type}?url=${encodeURIComponent(url)}`;
+      window.location.href = api;
+    }
   </script>
 </body>
-  </html>
+    </html>
