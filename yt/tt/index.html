@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #25F4EE, #FE2C55);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #222;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #444;
+    }
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TikTok Downloader</h1>
+    <input type="text" id="url" placeholder="Masukkan URL TikTok">
+    <button onclick="download()">Download</button>
+    <a href="/">⬅ Kembali</a>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function download() {
+      const url = document.getElementById("url").value;
+      if(!url) return alert("Masukkan URL TikTok dulu!");
+      const res = await fetch(`https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      if(data?.video?.noWatermark) {
+        document.getElementById("result").innerHTML = `<a href="${data.video.noWatermark}" target="_blank">📥 Download Video</a>`;
+      } else {
+        document.getElementById("result").innerHTML = "❌ Gagal mengambil link.";
+      }
+    }
+  </script>
+</body>
+</html>
