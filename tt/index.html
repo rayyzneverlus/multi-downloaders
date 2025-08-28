@@ -1,75 +1,53 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TikTok Downloader</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #25F4EE, #FE2C55);
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 1rem;
-    }
-    button {
-      padding: 12px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #444;
-    }
-    a {
-      margin-top: 20px;
-      display: inline-block;
-      color: white;
-      text-decoration: underline;
-    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#25F4EE,#FE2C55);color:#111}
+    .wrap{max-width:860px;margin:40px auto;padding:28px;background:rgba(255,255,255,0.08);border-radius:12px}
+    h1{margin:0 0 8px}
+    input,button{width:100%;padding:12px;border-radius:8px;border:0;margin-top:10px;font-size:15px}
+    .result{margin-top:16px;padding:12px;background:rgba(0,0,0,0.04);border-radius:8px}
+    a.download-link{display:inline-block;margin-top:8px;padding:10px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none}
+    .back{display:inline-block;margin-top:14px;color:rgba(0,0,0,0.7);text-decoration:underline}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>TikTok Downloader</h1>
-    <input type="text" id="url" placeholder="Masukkan URL TikTok">
-    <button onclick="download()">Download</button>
-    <a href="/">⬅ Kembali</a>
-    <div id="result"></div>
+  <div class="wrap">
+    <h1>🎵 TikTok Downloader</h1>
+    <p>Masukkan link TikTok lalu tekan <strong>Get</strong>.</p>
+
+    <input id="url" placeholder="https://www.tiktok.com/@user/video/..." />
+    <button id="btn">Get</button>
+
+    <div id="result" class="result">Hasil akan muncul di sini.</div>
+    <a class="back" href="/">⬅ Kembali</a>
   </div>
 
   <script>
-    async function download() {
-      const url = document.getElementById("url").value;
-      if(!url) return alert("Masukkan URL TikTok dulu!");
-      const res = await fetch(`https://api.tiklydown.me/api/download?url=${encodeURIComponent(url)}`);
-      const data = await res.json();
-      if(data?.video?.noWatermark) {
-        document.getElementById("result").innerHTML = `<a href="${data.video.noWatermark}" target="_blank">📥 Download Video</a>`;
-      } else {
-        document.getElementById("result").innerHTML = "❌ Gagal mengambil link.";
+    document.getElementById('btn').addEventListener('click', async () => {
+      const url = document.getElementById('url').value.trim()
+      if (!url) return alert('Masukkan URL TikTok!')
+      const result = document.getElementById('result')
+      result.innerHTML = '⏳ Menghubungi server...'
+      try {
+        const r = await fetch(`/api/tt?url=${encodeURIComponent(url)}`)
+        const data = await r.json()
+        if (data.error) throw new Error(data.error)
+
+        // Try common fields
+        let html = ''
+        if (data.noWatermark) html += `<a class="download-link" href="${data.noWatermark}" target="_blank">⬇️ Download (no watermark)</a><br>`
+        if (data.watermark) html += `<a class="download-link" href="${data.watermark}" target="_blank">⬇️ Download (with watermark)</a><br>`
+        if (data.play) html += `<a class="download-link" href="${data.play}" target="_blank">⬇️ Download (play)</a><br>`
+        if (!html) html = '<pre>' + JSON.stringify(data,null,2) + '</pre>'
+        result.innerHTML = html
+      } catch (e) {
+        result.innerHTML = '❌ Error: ' + e.message
       }
-    }
+    })
   </script>
 </body>
 </html>
